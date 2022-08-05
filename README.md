@@ -1,1 +1,1 @@
-# Rikidink.github.io
+# Ricky Zhang
