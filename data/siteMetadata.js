@@ -6,8 +6,8 @@ const siteMetadata = {
   description: 'A collection of algorithms and general programming stuff',
   language: 'en-au',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://algorithmica.vercel.app',
-  siteRepo: 'https://github.com/timlrx/tailwind-nextjs-starter-blog',
+  siteUrl: 'https://rickit.net/algorithmica',
+  siteRepo: 'https://github.com/Rikidink/algorithmica',
   siteLogo: '/static/images/logo.png',
   socialBanner: '/static/images/twitter-card.png',
   mastodon: 'https://mastodon.social/@mastodonuser',
