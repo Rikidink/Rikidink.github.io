@@ -1,0 +1,58 @@
+---
+title: 'Hash Tables: A Deep Dive'
+date: '2024-06-5'
+tags: ['data_structures']
+draft: true
+summary: A detailed overview of one of my favourite data
+  structures...hash tables! Including different conflict resolution
+  strategies (First blog post on the platform!).
+---
+
+# Hash tables! What are they?
+
+I'm sure we have used them in one way or another; whether as a `dict()` in Python, a `HashMap<>()` in Java, or as a `Map()` in JavaScript (as a side note,
+JavaScript objects are also basically hash tables) **insert footnote**. But how do these implementations of hash tables work in these languages under the hood?
+
+# Introduction
+
+First off, for those of you who do not know, a hash table is a data structure that implements the associative array abstract data type **insert footnote**
+that stores `(key, value)` pairs where all keys in the hash table are unique and distinct from eachother. Insertion, deletion, and
+lookup/search operations on hash tables take as input a key and inserts/deletes based on the input value.
+
+For example, consider the following code snippet of a hash table in Python:
+
+```python
+hash_table = dict()
+
+# insert pair (10, "hello") and (20, "world")
+hash_table[10] = "hello"
+hash_table[20] = "world"
+# hash_table is now {10: "hello", 20: "world"}
+
+# delete pair (10, "hello")
+del hash_table[10]
+# hash_table is now {20: "world"}
+
+# retrieve value at key 20:
+value = hash_table[20]
+# value is "world"
+```
+
+And here's the cool part:
+
+$$
+\mathbf{Y} = \left[\begin{array}
+  {c}
+  y_1 \\
+  . \\
+  . \\
+  . \\
+  y_n
+\end{array}\right]
+$$
+
+Ok cool so we can get values from a hash table based on a unique key but how does a hash table work behind the scenes?
+
+# The Hash Function
+
+This is the cornerstone of the hash_table and what
