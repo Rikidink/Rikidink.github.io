@@ -15,7 +15,7 @@ JavaScript objects are also basically hash tables) **insert footnote**. But how 
 
 # Introduction
 
-First off, for those of you who do not know, a hash table is a data structure that implements the associative array abstract data type **insert footnote**
+First off, for those of you who do not know, a hash table is a data structure that implements the _associative array_ abstract data type **insert footnote**
 that stores `(key, value)` pairs where all keys in the hash table are unique and distinct from eachother. Insertion, deletion, and
 lookup/search operations on hash tables take as input a key and inserts/deletes based on the input value.
 
@@ -33,9 +33,13 @@ hash_table[20] = "world"
 del hash_table[10]
 # hash_table is now {20: "world"}
 
+# update value at key 20 to "apples"
+hash_table[20] = "apples"
+# hash_table is now {20: "apples"}
+
 # retrieve value at key 20:
 value = hash_table[20]
-# value is "world"
+# value is "apples"
 ```
 
 And here's the cool part:
@@ -53,8 +57,48 @@ $$
 
 All the operations have constant time average case!
 
-Ok cool so we can get values from a hash table based on a unique key but how does a hash table work behind the scenes?
+Now, it's important to briefly mention that behind the scenes of a hash table lies a _fixed size array_ where the `(key, value)` pairs are actually stored. Keep this
+in mind while reading the next section(s).
 
 # The Hash Function
 
-This is the cornerstone of the hash_table and what
+$$
+H: k \to \set{0,1,2\dots m-1}
+$$
+
+The hash function serves as the cornerstone of the hash table data structure. A hash function, in the context of hash tables, simply takes as input an arbitrary `key` value
+and mathematically calculates a `hash value` based on the input. Hash functions should demonstrate the following properties when calculating hash values:
+
+1. **Deterministic:** Must always produce the same hash value for the same key.
+2. **Fixed range of outputs:** A produced hash value $v$ should be fixed within range $$0 \le v \le m-1$$ where $m$ is the length of the fixed size array.
+3. **Uniformity:** Every hash value in the output range should be generated with roughly the same probability.
+4. **Minimised collisions:** A good hash function should have minimal collisions where a collision is defined as when two (or more) _unique_ keys map to the same hash value.
+5. **Efficient:** Hash value calculation should be computationally inexpensive.
+
+Alright so now that we've established some properties of a good hash function, let's now see why these properties matter in relation to hash tables.
+
+Do you remember when we talked about `(key, value)` pairs and the fixed size array? Well, these pairs are
+indexed within the array by first applying the hash function to the `key` and then using the resultant hash value as the index for the pair in the array.
+
+Property 2 of the hash function now starts to make more sense. If we're using hash values as indexes for an array, then the hash values must be bounded by 0 and the last
+index of the array, or: $$0 \le v \le m-1$$ where $m$ is `len(array)`.
+
+Hopefully you can now see why the hash function is so important. It allows us to quickly get the index of a specific location within the hash table's array by simply
+hashing the input key and performing an operation on `array[index]`. We also know that indexing and array takes $O(1)$ constant time too.
+
+This is fantastic news! $O(1)$ time complexity for all operations is amazing! But, as we've seen before...the worst case is indeed $O(n)$ so whats the catch?
+
+### Nothing's perfect
+
+Now, in property 3 of a hash function we talked about collisions, when two or more unique keys `hash` to the same value. This can sometimes happen (albeit very rarely in well
+designed hash functions) and when it does, we have to deal with it. But by designing a hash function in consideration of _properties 2 & 3_, we can minimise the chance of collisions.
+
+(Also for those of you wondering, yes, perfect hash functions with no collisions do exist) **insert footnote**
+
+Keeping collisions in mind, let's now see how we can handle them within the implementation of the operations.
+
+# Operations & Collision Resolution Methods
+
+Let's begin by assuming we have a **perfect** hash function: one that _never_ has any collisions for sake of visualising what the operations do in a _perfect world_.
+
+**Insert**
