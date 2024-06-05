@@ -41,15 +41,17 @@ value = hash_table[20]
 And here's the cool part:
 
 $$
-\mathbf{Y} = \left[\begin{array}
-  {c}
-  y_1 \\
-  . \\
-  . \\
-  . \\
-  y_n
-\end{array}\right]
+\\[0.2em]
+\begin{array}{|c|c|c|}
+    \hline \text{Operation} & \text{Average case} & \text{Worst case} \\
+    \hline Insert&Θ(1)&O(n) \\
+    \hline Delete&Θ(1)&O(n) \\
+    \hline Lookup&Θ(1)&O(n) \\
+    \hline
+\end{array}
 $$
+
+All the operations have constant time average case!
 
 Ok cool so we can get values from a hash table based on a unique key but how does a hash table work behind the scenes?
 
