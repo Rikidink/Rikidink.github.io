@@ -11,13 +11,17 @@ summary: A detailed overview of one of my favourite data
 # Hash tables! What are they?
 
 I'm sure we have used them in one way or another; whether as a `dict()` in Python, a `HashMap<>()` in Java, or as a `Map()` in JavaScript (as a side note,
-JavaScript objects are also basically hash tables) **insert footnote**. But how do these implementations of hash tables work in these languages under the hood?
+JavaScript objects are also basically hash tables). [^1] But how do these implementations of hash tables work in these languages under the hood?
+
+[^1]: blank
 
 # Introduction
 
-First off, for those of you who do not know, a hash table is a data structure that implements the _associative array_ abstract data type **insert footnote**
+First off, for those of you who do not know, a hash table is a data structure that implements the _associative array_[^2] abstract data type
 that stores `(key, value)` pairs where all keys in the hash table are unique and distinct from eachother. Insertion, deletion, and
 lookup/search operations on hash tables take as input a key and inserts/deletes based on the input value.
+
+[^2]: blank
 
 For example, consider the following code snippet of a hash table in Python:
 
@@ -93,7 +97,9 @@ This is fantastic news! $O(1)$ time complexity for all operations is amazing! Bu
 Now, in property 3 of a hash function we talked about collisions, when two or more unique keys `hash` to the same value. This can sometimes happen (albeit very rarely in well
 designed hash functions) and when it does, we have to deal with it. But by designing a hash function in consideration of _properties 2 & 3_, we can minimise the chance of collisions.
 
-(Also for those of you wondering, yes, perfect hash functions with no collisions do exist) **insert footnote**
+(Also for those of you wondering, yes, perfect hash functions with no collisions do exist)[^3]
+
+[^3]: blank
 
 Keeping collisions in mind, let's now see how we can handle them within the implementation of the operations.
 
@@ -101,4 +107,4 @@ Keeping collisions in mind, let's now see how we can handle them within the impl
 
 Let's begin by assuming we have a **perfect** hash function: one that _never_ has any collisions for sake of visualising what the operations do in a _perfect world_.
 
-**Insert**
+**Insert/Update**
