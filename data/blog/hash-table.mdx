@@ -107,13 +107,189 @@ Keeping collisions in mind, let's now see how we can handle them within the impl
 
 Let's begin by assuming we have a **perfect** hash function: one that _never_ has any collisions for sake of visualising what the operations do in a _perfect world_.
 
-**Insert/Update**
+In the following examples, we use `integer` keys but a hash function should be able to hash other data types such as `strings`.
+
+### Operations
 
 <details>
   <summary>
     <i>
-      <u>Expand</u>
+      <u>Insert</u>
     </i>
   </summary>
+
+(Note: when inserting a value with a _key_ that already exists in the table, the old value associated with that key is simply updated to the new value)
+
   <div className="h-auto w-full">![insert31](/static/images/insert31.svg)</div>
+  <div className="h-auto w-full">![insert53](/static/images/insert53.svg)</div>
 </details>
+
+<details>
+  <summary>
+    <i>
+      <u>Delete</u>
+    </i>
+  </summary>
+  <div className="h-auto w-full">![delete](/static/images/delete.svg)</div>
+</details>
+
+To do lookup for a value, the input key is simply hashed and the position in the array is checked for the value.
+
+Pretty simple right?
+
+Now let's see what happens when there's a collision with a non-perfect hash function during insertion in a seperate example hash table.
+
+<details>
+  <summary>
+    <i>
+      <u>Collision!</u>
+    </i>
+  </summary>
+  <div className="h-auto w-[90%]">![collision](/static/images/collision.svg)</div>
+</details>
+
+Oh no! What happened? As we can see in the figure, both keys 5 and 7 just so happen to hash to the same value 2 which results in a collision when the value
+`"fish"` is being inserted.
+
+So...how do we deal with this? Well, there are several ways we can approach handling collisions but let's begin with one called \_"seperate chaining".
+
+### Seperate Chaining
+
+This method involves storing a linked list at each index of the array, so when we have a collision during insertion, the new `(key, value)` pair is simply appended
+to the linked list at the index that has the collision.
+
+Let's see how this works with the previous collision example:
+
+<details>
+  <summary>
+    <i>
+      <u>Seperate Chaining</u>
+    </i>
+  </summary>
+  <div className="h-auto w-[90%]">![seperate_chaining](/static/images/seperate_chaining.svg)</div>
+</details>
+
+So as we can now see in the figure above, `"fish"` is now appended onto the linked list at index 2 of the array. The linked list at index 2 now looks like:
+
+`(7, "cats")` --> `(5, "fish")`
+
+Now, this does have some implications for the rest of the operations (delete and lookup), instead of just hashing the input key for these operations and looking
+at the appropriate index in the array, we now also have to traverse/search through the linked list located at that index to look for the desired key since all the keys
+in the linked list hash to the same value.
+
+You might now be able to see where the $O(n)$ worst case comes from...
+
+If we were super-duper unlucky and all of our elements, $n$, were stored within a linked list at some index in the array, then we obviously will need to
+traverse that whole linked list in $O(n)$ time in order to delete and search for an element.
+
+Instead of linked lists, other data structures may be used in seperate chaining but those won't be covered here, you can, however, have a read of them in the footnote.[^4]
+
+[^4]: blank
+
+### Open Addressing
+
+This is another collision resolution method but unlike seperate chaining, it does **not** involve introducing other data structures to resolve collisions.
+
+Instead, all keys and values are kept within the array but collisions are dealt through a method called **probing**.
+
+I know it sounds like the beginning of an alien abduction but trust me it's a pretty clever process.
+
+#### Linear Probing
+
+Suppose we try and insert an arbitrary `(key, value)` pair into our hash table but encounter a collision at some index $i$ (i.e: theres already an entry at index $i$ and the keys don't match)
+the next course of action with the _linear probing_ method is to simply check the next space in the array, i.e: at index $i+1$ and if that space is free, just insert
+into it. If not, continue searching at $i+2$, and $i+3$, and so on.
+
+Sounds pretty simple right? That's because it is, at least on first impression because there are a few implications with just chucking in `(key, value)` pairs in the
+next available space in our array.
+
+**Insert**
+
+Suppose we have 4 arbitrary `(key, value)` pairs that all just so happen to have keys that hash to the same index $i$, when inserting, we'll end up with a _cluster_
+of entries within the range
+
+$$\set{i,~i+1,~i+2,~i+3}$$
+
+This concept of entries in the hash table clustering together is called **primary clustering** and can have a serious impact on the performance of operations on the
+hash table. But this concept will be expanded upon later, for now, just internalise the fact that with linear probing, entries have the tendency to bunch together
+when inserting.
+
+**Insert image here**
+
+**Lookup/Search**
+
+Now, when a search is conducted we of course first hash the key and look at `array[i]` which is indicted by the hash value. If the key at `array[i]` matches our input key
+then we return the value at `array[i]`, if the key doesn't match then we keep searching starting at `array[i+1]`. It's also important to note that when our search brings
+us to the end of the array, i.e: `array[len(array)-1]`, we have to loop back and continue our search at `array[0]`.
+
+But what if the key we're looking for doesn't exist in our hash table? When do we stop our search?
+
+We stop when we encounter an empty entry in the array, i.e: when `array[i] == None` as this denotes the **end of the cluster of entries**.
+
+**Insert image here**
+
+**Deletion**
+
+Ok let's talk about deletion in a linear probing hash table. Suppose we have a situation like this, where we have a cluster of entries sitting in our hash table.
+
+**Insert image here**
+
+And then we naively delete [chosen pair]. We now have a big gaping hole in our cluster of entries (which has now become two clusters). Now let's search
+for [chosen key] in our hash table.
+
+**Insert image**
+
+Uh oh...we can clearly see that [chosen key] is in our hash table but our search operation ended because we found an empty entry (i.e: where [chosen pair] was deleted)
+and we were not able to continue searching into the second cluster. So how do we handle this?
+
+There's two ways to approach this:
+
+1. **Reinsertion:** After deleting an entry at `array[i]`, reinsert all entries from `array[i+1]` until an empty entry.
+2. **Ghost entry:** After deleting an entry at `array[i]`, insert a special symbol at `array[i]` to denote an element was deleted at that index.
+
+Now, when using the ghost entry approach, the ghost entry essentially "fills" the empty whole that would otherwise be left by deleting the entry naively. So when
+searching, you can ignore this ghost entry and continue searching past it. When inserting, the to-be-inserted pair can safely be inserted at the index which has the ghost entry.
+
+## Primary Clustering and Load Factor
+
+I briefly mentioned primary clustering before but let's now get a bit deeper into it.
+
+So we now know what clusters in a hash table are but why do they degrade performance? Well, imagine a hash table that contains a **big, big cluster** of entries of
+varying hash values that have merged together to form this giant cluster. Now, whenever we want to search our hash table we have to linearly search this cluster to
+find the key we want. This is pretty bad and you can probably quite obviously see that this is quickly becoming $O(n)$ time for operations.
+
+On top of this, the larger the cluster, the higher chance it's going to get even larger since there will be a statistically higher chance that any given
+`(key, value)` pair inserted into the hash table is going to be hashed into the cluster, even if the cluster's associated hash value is not the same as the one being inserted.
+
+So what do we do?
+
+Towards the beginning I mentioned that hash tables were implemented using **fixed size arrays**, but some of you might now be thinking...what if that array gets full?
+Well I sorta lied to you guys, when a hash table reaches a certain threshold of "fullness" then the size of the underlying array structure must be increased.
+
+Or, more specifically, a new array is created and every `(key, value)` pair in the old array is reinserted/**rehashed** into the new array. Upon doing this, previously large
+clusters present in the old array can disappear which increases the **performance** of operations on the new hash table.
+
+This threshold/level of "fullness" is called the **load factor** of a hash table and is defined by this expression:
+
+$$
+\mathbf{load~factor~(\alpha)} = \frac{n}{m}
+$$
+
+where
+
+- $n$ is the number of entries present within the hash table.
+- $m$ is the size of the array.
+
+Now, without getting too deep into it, rehashing is obviously a computationally expensive operation so we don't want to constantly rehash our whole hash table since
+the cost of rehashing will outweigh the benefits of reducing clustering in the new hash table, but we also don't want to wait until our table is almost completely full to
+rehash since performance degradation of operations will be too noticeable.
+
+This is why it's important to come up with a reasonable $\alpha_{max}$ value to rehash at.
+
+# Conclusion
+
+Thanks for reading the first post on this blog! There's still quite a bit more stuff to learn for hash tables, this post just serves as a light introduction to them (I also didn't want to make it super long)
+but I recommend having a look at **quadratic probing**[^5] as a continuation of linear probing. The Wikipedia page on hash tables is also quite comprehensive on all
+different methods and processes.
+
+[^5]: blank
