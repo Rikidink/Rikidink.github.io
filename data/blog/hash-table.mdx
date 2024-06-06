@@ -11,9 +11,9 @@ summary: A detailed overview of one of my favourite data
 # Hash tables! What are they?
 
 I'm sure we have used them in one way or another; whether as a `dict()` in Python, a `HashMap<>()` in Java, or as a `Map()` in JavaScript (as a side note,
-JavaScript objects are also basically hash tables). [^1] But how do these implementations of hash tables work in these languages under the hood?
+`set()` in Python is implemented using a hash table). [^1] But how do these implementations of hash tables work in these languages under the hood?
 
-[^1]: blank
+[^1]: Set implemention in Python: [GitHub](https://github.com/python/cpython/blob/main/Objects/setobject.c)
 
 # Introduction
 
@@ -21,7 +21,7 @@ First off, for those of you who do not know, a hash table is a data structure th
 that stores `(key, value)` pairs where all keys in the hash table are unique and distinct from eachother. Insertion, deletion, and
 lookup/search operations on hash tables take as input a key and inserts/deletes based on the input value. Keys/values in hash tables are NOT ordered.
 
-[^2]: blank
+[^2]: Wikipedia page on associate arrays: [Wikipedia](https://en.wikipedia.org/wiki/Associative_array)
 
 For example, consider the following code snippet of a hash table in Python:
 
@@ -99,7 +99,7 @@ designed hash functions) and when it does, we have to deal with it. But by desig
 
 (Also for those of you wondering, yes, perfect hash functions with no collisions do exist)[^3]
 
-[^3]: blank
+[^3]: Wikipedia page on perfect hash functions: [Wikipedia](https://en.wikipedia.org/wiki/Perfect_hash_function)
 
 Keeping collisions in mind, let's now see how we can handle them within the implementation of the operations.
 
@@ -182,9 +182,9 @@ You might now be able to see where the $O(n)$ worst case comes from...
 If we were super-duper unlucky and all of our elements, $n$, were stored within a linked list at some index in the array, then we obviously will need to
 traverse that whole linked list in $O(n)$ time in order to delete and search for an element.
 
-Instead of linked lists, other data structures may be used in seperate chaining but those won't be covered here, you can, however, have a read of them in the footnote.[^4]
+Instead of linked lists, other data structures may be used in seperate chaining but those won't be covered here, you can, however, have a read of them in the Wikipedia page for hash tables.[^4]
 
-[^4]: blank
+[^4]: Wikipedia page on hash tables [Wikipedia](https://en.wikipedia.org/wiki/Hash_table)
 
 ### Open Addressing
 
@@ -214,7 +214,24 @@ This concept of entries in the hash table clustering together is called **primar
 hash table. But this concept will be expanded upon later, for now, just internalise the fact that with linear probing, entries have the tendency to bunch together
 when inserting.
 
-**Insert image here**
+<details>
+  <summary>
+    <i>
+      <u>Insert</u>
+    </i>
+  </summary>
+
+In this example, we are going to insert
+
+1. `(6, "Carbon")`
+2. `(8, "Oxygen")`
+3. `(7, "Nitrogen")`
+4. `(1, "Hydrogen)`
+
+Which all contain keys that hash to the value **1**.
+
+  <div className="h-auto w-full">![cluster1](/static/images/cluster1.svg)</div>
+</details>
 
 **Lookup/Search**
 
@@ -226,20 +243,23 @@ But what if the key we're looking for doesn't exist in our hash table? When do w
 
 We stop when we encounter an empty entry in the array, i.e: when `array[i] == None` as this denotes the **end of the cluster of entries**.
 
-**Insert image here**
-
 **Deletion**
 
-Ok let's talk about deletion in a linear probing hash table. Suppose we have a situation like this, where we have a cluster of entries sitting in our hash table.
+Ok let's talk about deletion in a linear probing hash table. Let's use the scenario from above, where we have a cluster of entries sitting in our hash table.
 
-**Insert image here**
+When we naively delete `(3, "Nitrogen")`. We now have a big gaping hole in our cluster of entries (which has now become two clusters). Now let's search
+for key `1` in our hash table.
 
-And then we naively delete [chosen pair]. We now have a big gaping hole in our cluster of entries (which has now become two clusters). Now let's search
-for [chosen key] in our hash table.
+<details>
+  <summary>
+    <i>
+      <u>Delete</u>
+    </i>
+  </summary>
+  <div className="h-auto w-full">![cluster2](/static/images/cluster2.svg)</div>
+</details>
 
-**Insert image**
-
-Uh oh...we can clearly see that [chosen key] is in our hash table but our search operation ended because we found an empty entry (i.e: where [chosen pair] was deleted)
+Uh oh...we can clearly see that key `1` is in our hash table but our search operation ended because we found an empty entry (i.e: where `(3, "Nitrogen")` was deleted)
 and we were not able to continue searching into the second cluster. So how do we handle this?
 
 There's two ways to approach this:
@@ -289,7 +309,5 @@ This is why it's important to come up with a reasonable $\alpha_{max}$ value to 
 # Conclusion
 
 Thanks for reading the first post on this blog! There's still quite a bit more stuff to learn for hash tables, this post just serves as a light introduction to them (I also didn't want to make it super long)
-but I recommend having a look at **quadratic probing**[^5] as a continuation of linear probing. The Wikipedia page on hash tables is also quite comprehensive on all
-different methods and processes.
-
-[^5]: blank
+but I recommend having a look at **quadratic probing** as a continuation of linear probing and also reading up on actual implementations of hash functions to see how they work.
+The Wikipedia page on hash tables is also quite comprehensive on all different methods and processes.[^4]
