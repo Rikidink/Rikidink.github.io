@@ -19,7 +19,7 @@ JavaScript objects are also basically hash tables). [^1] But how do these implem
 
 First off, for those of you who do not know, a hash table is a data structure that implements the _associative array_[^2] abstract data type
 that stores `(key, value)` pairs where all keys in the hash table are unique and distinct from eachother. Insertion, deletion, and
-lookup/search operations on hash tables take as input a key and inserts/deletes based on the input value.
+lookup/search operations on hash tables take as input a key and inserts/deletes based on the input value. Keys/values in hash tables are NOT ordered.
 
 [^2]: blank
 
@@ -108,3 +108,12 @@ Keeping collisions in mind, let's now see how we can handle them within the impl
 Let's begin by assuming we have a **perfect** hash function: one that _never_ has any collisions for sake of visualising what the operations do in a _perfect world_.
 
 **Insert/Update**
+
+<details>
+  <summary>
+    <i>
+      <u>Expand</u>
+    </i>
+  </summary>
+  <div className="h-auto w-full">![insert31](/static/images/insert31.svg)</div>
+</details>
