@@ -120,8 +120,8 @@ In the following examples, we use `integer` keys but a hash function should be a
 
 (Note: when inserting a value with a _key_ that already exists in the table, the old value associated with that key is simply updated to the new value)
 
-  <div className="h-auto w-full">![insert31](/static/images/insert31.svg)</div>
-  <div className="h-auto w-full">![insert53](/static/images/insert53.svg)</div>
+  <div className="h-auto w-full">![insert31](/static/images/hashtable/insert31.svg)</div>
+  <div className="h-auto w-full">![insert53](/static/images/hashtable/insert53.svg)</div>
 </details>
 
 <details>
@@ -130,7 +130,7 @@ In the following examples, we use `integer` keys but a hash function should be a
       <u>Delete</u>
     </i>
   </summary>
-  <div className="h-auto w-full">![delete](/static/images/delete.svg)</div>
+  <div className="h-auto w-full">![delete](/static/images/hashtable/delete.svg)</div>
 </details>
 
 To do lookup for a value, the input key is simply hashed and the position in the array is checked for the value.
@@ -145,7 +145,7 @@ Now let's see what happens when there's a collision with a non-perfect hash func
       <u>Collision!</u>
     </i>
   </summary>
-  <div className="h-auto w-[90%]">![collision](/static/images/collision.svg)</div>
+  <div className="h-auto w-[90%]">![collision](/static/images/hashtable/collision.svg)</div>
 </details>
 
 Oh no! What happened? As we can see in the figure, both keys 5 and 7 just so happen to hash to the same value 2 which results in a collision when the value
@@ -166,7 +166,9 @@ Let's see how this works with the previous collision example:
       <u>Seperate Chaining</u>
     </i>
   </summary>
-  <div className="h-auto w-[90%]">![seperate_chaining](/static/images/seperate_chaining.svg)</div>
+  <div className="h-auto w-[90%]">
+    ![seperate_chaining](/static/images/hashtable/seperate_chaining.svg)
+  </div>
 </details>
 
 So as we can now see in the figure above, `"fish"` is now appended onto the linked list at index 2 of the array. The linked list at index 2 now looks like:
@@ -230,7 +232,7 @@ In this example, we are going to insert
 
 Which all contain keys that hash to the value **1**.
 
-  <div className="h-auto w-full">![cluster1](/static/images/cluster1.svg)</div>
+  <div className="h-auto w-full">![cluster1](/static/images/hashtable/cluster1.svg)</div>
 </details>
 
 **Lookup/Search**
@@ -256,7 +258,7 @@ for key `1` in our hash table.
       <u>Delete</u>
     </i>
   </summary>
-  <div className="h-auto w-full">![cluster2](/static/images/cluster2.svg)</div>
+  <div className="h-auto w-full">![cluster2](/static/images/hashtable/cluster2.svg)</div>
 </details>
 
 Uh oh...we can clearly see that key `1` is in our hash table but our search operation ended because we found an empty entry (i.e: where `(3, "Nitrogen")` was deleted)
