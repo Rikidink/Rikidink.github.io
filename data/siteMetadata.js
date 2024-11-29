@@ -1,8 +1,8 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'Algorithmica',
+  title: 'NULLPTR*',
   author: 'Ricky Zhang',
-  headerTitle: 'Encyclopedia Algorithmica',
+  headerTitle: 'NULLPTR* Blog',
   description: 'Algorithms and other programming related stuff',
   language: 'en-au',
   theme: 'system', // system, dark or light
