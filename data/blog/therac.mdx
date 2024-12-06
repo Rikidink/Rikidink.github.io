@@ -1,0 +1,72 @@
+---
+title: 'Therac-25 and the importance of software testing and design'
+date: '2024-06-7'
+tags: ['software', 'case study']
+draft: true
+summary: A case study on one of the most infamous cases of software bugs and
+  its disasterous consequences.
+---
+
+# Background
+
+The Therac-25 was a _radiation therapy_ machine that was produced by the Atomic Energy of Canada Limited (AELC) in 1982. The Therac-25 served as the successor for
+the Therac-20 and Therac-6 machines.
+
+These machines were used to treat patients with cancer by administrating controlled doses of ionising radiation in order to kill cancerous cells. Specifically,
+the Therac-25 was equipped to administer **both** electrons and X-rays depending on the type of treatment where electron-based radiation therapy is commonly used to kill
+cancer cells closer to the skin while X-rays are more suited to target tumors within major organs deeper in the body.
+
+The main distinction between the Therac-25 and previous models is that the Therac-25 is completely **software-controlled** including most of the machine's safety
+mechanisms/checks that were originally hardware based.
+
+# Incidents
+
+Radiation therapy machines have to be designed in a robust manner, containing sufficient fail-safes to ensure patient safety since radiation can not only kill cancerous
+cells, but also healthy cells (like how sunburns develop as a result of the sun's UV radiation).
+
+As a consequence of poor software design and development in addition to almost non-existent testing on the machine's software, the Therac-25 was involved in
+**six incidents** in which patients were administered significantly more radiation than intended with some receiving doses that were hundreds of times more than
+required. These incidents resulted in the **deaths** of 2 people and left 4 seriously injured as a result of careless software bugs in combination with poor system design.
+These incidents could have been _easily_ avoided if any meaningful software testing or system review was conducted on the machine before being produced.
+
+There were _two_ main types of software bugs that were directly involved in the incidents:
+
+1. **Race Conditions.**
+2. **Integer Overflows.**
+
+These will be covered later in the post. But first, we have to get an understanding on how the machine mechanically operated.
+
+# System Design
+
+The Therac-25 contained a "linear accelerator" which generated a "beam" of accelerated, high-energy electrons within the range of $5~MeV$ to $25~MeV$.
+
+A turntable on the machine contained three different modules which could be rotated in-front of the raw electron beam depending on the desired mode of operation:
+
+1. **"Field light mode"** which used harmless visible light reflected by a mirror in order to help the operator correctly position the machine for treatment.
+2. **Electron-beam mode** which set the electron beam to **low current** and moved the "scanning magnets" in-front of the beam in order to produce a more spread-out and lower concentration beam safe for patient treatment.
+3. **X-ray mode** which set the raw electron beam to the **maximum** $25~MeV$ at **high current** before being shot at tungsten metal in order to produce X-rays. These X-rays are then passed
+   through a filter in order to shape them.
+
+<details>
+  <summary>
+    <i>
+      <u>Turntable Diagram</u>
+    </i>
+  </summary>
+  <div className="h-auto w-[95%]">![turntable](/static/images/therac/turntable.png)</div>
+</details>
+
+Above is a diagram of the turntable that was used in the Therac-25 and is what a patient might see while awaiting treatment.
+
+The turntable and electron beam were entirely controlled by the machine's **software** after an operator inputs the desired mode and other specifications on a computer terminal.
+While the software control is not inherently bad per se (the Therac-20 also had software control like the Therac-25), the glaring issue with the Therac-25 comes from the fact
+that many of the Therac-20's hardware fail-safes such as fuses and circuit breakers were removed and replaced with software safety checks.
+
+# The Software Bugs
+
+Before we get into the actual software bugs it's important to highlight that the "blame" shouldn't be put entirely on these software bugs but instead the **whole** system
+is at fault here as well as the poor software engineering/system engineering practices that were adopted during development. What I mean by this is that it is virtually
+impossible to design and program perfect software that is bug free but in the case of the Therac-25 there should have been multiple fail-safes on the **hardware/physical** level
+to prevent the software bugs from manifesting into reality.
+
+$"MALFUNCTION 54"$

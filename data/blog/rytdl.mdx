@@ -1,0 +1,68 @@
+---
+title: 'Making a YouTube video downloader using React + Express (and Electron)'
+date: '2024-11-23'
+tags: ['software', 'web development']
+draft: true
+summary: Building a web app and desktop app to download YouTube videos using Vite + React + Express + Electron
+---
+
+# Preface
+
+Firstly, it has been many months since I've done a blog post...oops. But the important thing is that I'm back
+right?
+
+Secondly, I've made a new web app! As the title already states, this one is a YouTube video downloader app that
+can be run as a traditional web app or **desktop app** via Electron.
+
+What I mean by a desktop app is that there is a zip file that contains the whole app packaged into a `.exe` file which runs
+**both** the frontend **AND** backend in an Electron app. The coolest part though is that anyone can download the desktop app
+and run it on their system regardless of whether they have NodeJS or any of the dependencies.
+
+This was actually my first time using React and Electron and I'm very much a backend developer so the code is probably not all that good...
+but hey! It works right? Which is all that really matters.
+
+Now hold on, what even is Electron? And why is it relevant when making desktop apps? Well, to put it simply:
+Electron is basically a framework that allows you to run web-apps in desktop applications/windows. The way this is done is
+that Electron renders the app using a Chromium browser and runs the app on a packaged NodeJS environment.
+
+It's typically used to package **only** frontend apps (such as React apps) but as we'll see in this post, I also managed to
+make it run the Node/Express REST Api backend too, albeit, in a slightly dodgy manner...
+
+# Backend
+
+Now before diving into making this thing a desktop app, we have to actually make it into an ordinary web app first.
+
+Let's talk about the backend first.
+
+The backend is a classic Node app that uses Express to create a REST Api. There's only 2 endpoints (a GET and POST request) so its pretty straightforward but the technicalities that arise when dealing with
+downloading videos and processing them is where it gets complicated so lets delve a bit deeper into that.
+
+The backend utilises 2 main resources to download and process the videos:
+
+1. `ytdl-core` (the DistubeJS fork of it)
+2. `ffmpeg`
+
+`ytdl-core` is essentially a YouTube video downloader node module.
+
+Now, you're probably thinking, if this module does all the downloading for you, why would the overall process be complicated? Well, as it turns out, YouTube "videos" are seperated into two parts:
+
+1. The video file
+2. And the audio file
+
+These seperate parts will need to be merged **after** downloading for there to be the whole, complete video with audio.
+
+This is where `ffmpeg` comes in. `ffmpeg` is a software package that processes and handles audio and video files/streams. One of its many functionalities is, you guessed it, merging video and audio files.
+
+`ffmpeg` isn't a node module that can just be installed using `npm` though, it's an actual software package that has to be installed and downloaded onto your system as a `.exe` and interfaced using the
+`fluent-ffmpeg` node module. Normally, `fluent-ffmpeg` uses the `ffmpeg` installed globally on your system (i.e. the one referenced by the `PATH` variable) but I've chosen for it to use a `ffmpeg` that sits in the
+same directory as the backend. The reason for this is if we want this app to be a packaged desktop app that **anyone** can use (with or without NodeJS or other dependencies installed on their system), we can't assume
+the user has `ffmpeg` installed already which is why `ffmpeg` will come bundled with the desktop app.
+
+One annoying thing
+
+# Frontend
+
+For the frontend, I chose React, specifically a React app created using Vite.
+
+Now, what is Vite? I'll keep it short since its not super important in the grand scheme of things: Vite is a fast and lightweight build tool for web applications (like React!). With Vite, starting and compiling
+the React app takes waaaaay less longer compared to, for example, the standard `create-react-app` command.
